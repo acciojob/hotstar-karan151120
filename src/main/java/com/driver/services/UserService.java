@@ -30,43 +30,30 @@ public class UserService {
     public Integer addUser(User user){
 
         //Jut simply add the user to the Db and return the userId returned by the repository
-        userRepository.save(user);
-        return user.getId();
+        return userRepository.save(user).getId();
     }
 
     public Integer getAvailableCountOfWebSeriesViewable(Integer userId){
 
         //Return the count of all webSeries that a user can watch based on his ageLimit and subscriptionType
         //Hint: Take out all the Webseries from the WebRepository
-
-        int count = 0;
-        List<WebSeries> webSeriesList = webSeriesRepository.findAll();
-
         User user = userRepository.findById(userId).get();
-        if(user != null) {
-            String subscription = user.getSubscription().toString();
+        List<WebSeries> webSeries = webSeriesRepository.findAll();
+        int count = 0;
 
-            if(subscription.equals("BASIC")) {
-                for(int i=0; i<webSeriesList.size(); i++) {
-                    if(webSeriesList.get(i).getAgeLimit()<=user.getAge() && webSeriesList.get(i).getSubscriptionType().toString().equals("BASIC")) {
-                        count++;
-                    }
-                }
+        for (WebSeries webSeries1 : webSeries) {
+//                if (webSeries1.getAgeLimit() < user.getAge() && webSeries1.getSubscriptionType() == user.getSubscription().getSubscriptionType()) {
+//                    count++;
+//                }
+            if(webSeries1.getAgeLimit() <= user.getAge() && user.getSubscription().getSubscriptionType()==SubscriptionType.ELITE){
+                count++;
             }
-            else if (subscription.equals("PRO")) {
-                for(int i=0; i<webSeriesList.size(); i++) {
-                    if(webSeriesList.get(i).getAgeLimit()<=user.getAge() && (webSeriesList.get(i).getSubscriptionType().toString().equals("BASIC") || webSeriesList.get(i).getSubscriptionType().toString().equals("PRO"))) {
-                        count++;
-                    }
-                }
-            }
-            else if (subscription.equals("ELITE")) {
-                    for (int i=0; i<webSeriesList.size(); i++) {
-                        if (webSeriesList.get(i).getAgeLimit()<=user.getAge()) {
-                            count++;
-                        }
-                    }
-            }
+            else if(webSeries1.getAgeLimit() <= user.getAge() && user.getSubscription().getSubscriptionType()==SubscriptionType.PRO
+                    && (webSeries1.getSubscriptionType()==SubscriptionType.PRO || webSeries1.getSubscriptionType()==SubscriptionType.BASIC))
+                count++;
+            else if(webSeries1.getAgeLimit() <= user.getAge() && user.getSubscription().getSubscriptionType()==SubscriptionType.BASIC
+                    && webSeries1.getSubscriptionType()==SubscriptionType.BASIC)
+                count++;
         }
 
         return count;
