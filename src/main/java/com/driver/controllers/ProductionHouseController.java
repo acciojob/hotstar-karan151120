@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/production")
 public class ProductionHouseController {
 
-    ProductionHouseService productionHouseService = new ProductionHouseService();
+    @Autowired
+    ProductionHouseService productionHouseService;
 
 
     @PostMapping("/add")
