@@ -18,14 +18,16 @@ public class ProductionHouseService {
     ProductionHouseRepository productionHouseRepository;
 
     public Integer addProductionHouseToDb(ProductionHouseEntryDto productionHouseEntryDto){
+
         ProductionHouse productionHouse = new ProductionHouse();
-
         productionHouse.setName(productionHouseEntryDto.getName());
-        productionHouse.setRatings(0);
+        double ratings = 0;
+        productionHouse.setRatings(ratings);
+        productionHouse.setWebSeriesList(new ArrayList<>());
 
-        List<WebSeries> list = new ArrayList<>();
-        productionHouse.setWebSeriesList(list);
-        return  productionHouseRepository.save(productionHouse).getId();
+        productionHouseRepository.save(productionHouse);
+
+        return productionHouse.getId();
     }
 
 
